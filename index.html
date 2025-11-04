@@ -3,13 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chat Assistant</title>
+    <title>L'Oréal Beauty Assistant</title>
     <link
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
     />
     <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css" />
@@ -19,7 +19,17 @@
     <div class="page-wrapper">
       <!------- Header / Branding ------->
       <header class="site-header">
-        <h1 class="site-title">Smart Product Advisor</h1>
+        <div class="brand-container">
+          <img src="img/loreal-logo.png" alt="L'Oréal" class="brand-logo">
+          <h1 class="site-title">Beauty Assistant</h1>
+          <p class="site-tagline">Your personal beauty expert powered by AI</p>
+        </div>
+        
+        <!-- Clear Chat Button -->
+        <button id="clearChat" class="clear-chat-btn" title="Start new conversation">
+          <span class="material-icons">refresh</span>
+          New Chat
+        </button>
       </header>
 
       <!------- Chat Area ------->
@@ -35,8 +45,9 @@
               id="userInput"
               name="userInput"
               type="text"
-              placeholder="Ask me about products or routines…"
+              placeholder="Ask me about makeup, skincare, haircare, or fragrances..."
               autocomplete="off"
+              maxlength="200"
               required
             />
             <button type="submit" id="sendBtn">
@@ -44,23 +55,33 @@
               <span class="visually-hidden">Send</span>
             </button>
           </form>
+          
+          <!-- Character Counter -->
+          <div class="char-counter">
+            <span id="charCount">0</span>/200
+          </div>
         </section>
       </main>
 
       <!------- Footer Links ------->
       <footer class="site-footer">
-        <p>&copy; 2025 Company Name. All rights reserved.</p>
+        <p>&copy; 2025 L'Oréal. Because You're Worth It.</p>
         <nav>
-          <!-- These URLs are placeholders -->
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Use</a>
-          <a href="#">Contact</a>
+          <a href="https://www.loreal.com/en/privacy-policy/" target="_blank" rel="noopener">Privacy Policy</a>
+          <a href="https://www.loreal.com/en/terms-of-use/" target="_blank" rel="noopener">Terms of Use</a>
+          <a href="https://www.loreal.com/en/contact/" target="_blank" rel="noopener">Contact</a>
         </nav>
       </footer>
     </div>
 
-    <!-- secrets.js can be removed when using Cloudflare Workers for API requests -->
+    <!-- Load secrets.js with API key (protected by .gitignore) -->
     <script src="secrets.js"></script>
-    <script src="script.js"></script>
+    
+    <!-- Use script-local.js for direct OpenAI API calls -->
+    <script src="script-local.js"></script>
+    
+    <!-- Alternative scripts (comment out script-local.js and use one of these): -->
+    <!-- <script src="script-demo.js"></script> --> <!-- Demo mode with fake responses -->
+    <!-- <script src="script.js"></script> --> <!-- Cloudflare Worker mode for production -->
   </body>
 </html>

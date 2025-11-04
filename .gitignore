@@ -1,2 +1,16 @@
-# Secrets file containing API keys
+# Secrets file containing API keys - NEVER COMMIT THIS!
 secrets.js
+
+# Additional security - ignore any files with API keys
+**/secrets.js
+**/*secret*
+**/*apikey*
+.env
+.env.local
+
+# Node modules (if added later)
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
