@@ -3,7 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>L'Oréal Beauty Assistant</title>
+    <meta name="description" content="AI-powered L'Oréal Beauty Assistant chatbot featuring personalized product recommendations for makeup, skincare, haircare, and fragrances. Because You're Worth It! ✨" />
+    <meta name="keywords" content="L'Oréal, beauty assistant, AI chatbot, makeup recommendations, skincare routine, haircare products, fragrances" />
+    <meta name="author" content="L'Oréal Beauty Assistant" />
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="L'Oréal Beauty Assistant - AI-Powered Chatbot" />
+    <meta property="og:description" content="Get personalized beauty recommendations for makeup, skincare, haircare, and fragrances from our AI-powered chatbot." />
+    <meta property="og:image" content="img/loreal-logo.png" />
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="L'Oréal Beauty Assistant" />
+    <meta name="twitter:description" content="AI-powered beauty recommendations. Because You're Worth It! ✨" />
+    
+    <title>L'Oréal Beauty Assistant - AI Chatbot</title>
+    
     <link
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
@@ -74,12 +90,12 @@
       </footer>
     </div>
 
-    <!-- Production Mode: Using Cloudflare Worker (Secure!) -->
-    <script src="script.js"></script>
+    <!-- LOCAL TESTING MODE: Using secrets.js with direct OpenAI calls -->
+    <script src="secrets.js"></script>
+    <script src="script-local.js"></script>
     
-    <!-- Local Development Alternative (comment out script.js and use these): -->
-    <!-- <script src="secrets.js"></script> -->
-    <!-- <script src="script-local.js"></script> -->
+    <!-- PRODUCTION MODE: Using Cloudflare Worker (comment out above and use below) -->
+    <!-- <script src="script.js"></script> -->
     
     <!-- Demo Mode Alternative: -->
     <!-- <script src="script-demo.js"></script> -->

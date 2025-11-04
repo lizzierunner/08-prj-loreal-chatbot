@@ -5,6 +5,10 @@
   padding: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 /* —— L'Oréal Official Brand Colors (per FutureBrand guidelines) —— */
 :root {
   --loreal-black: #000000;
