@@ -74,14 +74,14 @@
       </footer>
     </div>
 
-    <!-- Load secrets.js with API key (protected by .gitignore) -->
-    <script src="secrets.js"></script>
+    <!-- Production Mode: Using Cloudflare Worker (Secure!) -->
+    <script src="script.js"></script>
     
-    <!-- Use script-local.js for direct OpenAI API calls -->
-    <script src="script-local.js"></script>
+    <!-- Local Development Alternative (comment out script.js and use these): -->
+    <!-- <script src="secrets.js"></script> -->
+    <!-- <script src="script-local.js"></script> -->
     
-    <!-- Alternative scripts (comment out script-local.js and use one of these): -->
-    <!-- <script src="script-demo.js"></script> --> <!-- Demo mode with fake responses -->
-    <!-- <script src="script.js"></script> --> <!-- Cloudflare Worker mode for production -->
+    <!-- Demo Mode Alternative: -->
+    <!-- <script src="script-demo.js"></script> -->
   </body>
 </html>
