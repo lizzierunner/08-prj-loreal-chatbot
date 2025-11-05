@@ -7,6 +7,64 @@ const sendBtn = document.getElementById("sendBtn");
 // Chat history to maintain conversation context
 let conversationHistory = [];
 
+// Load conversation history from localStorage on startup
+function loadConversationHistory() {
+  const saved = localStorage.getItem('lorealChatHistory');
+  if (saved) {
+    try {
+      conversationHistory = JSON.parse(saved);
+      console.log('Loaded conversation history from localStorage');
+    } catch (e) {
+      console.error('Error loading conversation history:', e);
+      conversationHistory = [];
+    }
+  }
+}
+
+// Save conversation history to localStorage
+function saveConversationHistory() {
+  try {
+    localStorage.setItem('lorealChatHistory', JSON.stringify(conversationHistory));
+    console.log('Saved conversation history to localStorage');
+  } catch (e) {
+    console.error('Error saving conversation history:', e);
+  }
+}
+
+// Load saved messages and display them in chat window
+function loadSavedMessages() {
+  const saved = localStorage.getItem('lorealChatMessages');
+  if (saved) {
+    try {
+      const messages = JSON.parse(saved);
+      messages.forEach(msg => {
+        displayMessage(msg.text, msg.sender, false); // false = don't save again
+      });
+      console.log('Loaded saved messages');
+    } catch (e) {
+      console.error('Error loading saved messages:', e);
+    }
+  }
+}
+
+// Save all messages to localStorage
+function saveMessages() {
+  try {
+    const messages = [];
+    const allMessages = chatWindow.querySelectorAll('.msg');
+    allMessages.forEach(msg => {
+      const text = msg.querySelector('.msg-text')?.textContent;
+      const sender = msg.classList.contains('user') ? 'user' : 'ai';
+      if (text && !msg.classList.contains('quick-replies')) {
+        messages.push({ text, sender });
+      }
+    });
+    localStorage.setItem('lorealChatMessages', JSON.stringify(messages));
+  } catch (e) {
+    console.error('Error saving messages:', e);
+  }
+}
+
 // L'Oréal product knowledge system prompt
 const systemPrompt = `You are a friendly and knowledgeable L'Oréal Beauty Assistant. You help customers discover and understand L'Oréal's extensive range of products including makeup, skincare, haircare, and fragrances.
 
@@ -39,7 +97,18 @@ Keep responses concise but informative (2-3 sentences typically).`;
 
 // Initialize chat with welcome message
 function initializeChat() {
-  const welcomeMessage = `✨ Welcome to L'Oréal Beauty Assistant! ✨
+  // Load saved conversation history
+  loadConversationHistory();
+  
+  // Check if we have saved messages
+  const savedMessages = localStorage.getItem('lorealChatMessages');
+  
+  if (savedMessages) {
+    // Load existing conversation
+    loadSavedMessages();
+  } else {
+    // Show welcome message for new users
+    const welcomeMessage = `✨ Welcome to L'Oréal Beauty Assistant! ✨
 
 I'm here to help you discover the perfect beauty products and routines. Whether you're looking for:
 
@@ -52,10 +121,11 @@ Just ask me anything about beauty, and I'll provide personalized L'Oréal produc
 
 What can I help you with today?`;
 
-  displayMessage(welcomeMessage, 'ai');
-  
-  // Show quick reply buttons to help users get started
-  showQuickReplies();
+    displayMessage(welcomeMessage, 'ai');
+    
+    // Show quick reply buttons to help users get started
+    showQuickReplies();
+  }
 }
 
 // Show quick reply suggestion buttons
@@ -92,14 +162,21 @@ function showQuickReplies() {
 }
 
 // Display message in chat window
-function displayMessage(message, sender) {
+function displayMessage(message, sender, shouldSave = true) {
   const messageDiv = document.createElement('div');
   messageDiv.classList.add('msg', sender);
   
-  // Create text content
+  // Create text content with smart product links
   const textSpan = document.createElement('span');
   textSpan.classList.add('msg-text');
-  textSpan.textContent = message;
+  
+  // Add smart product links for AI messages
+  if (sender === 'ai') {
+    textSpan.innerHTML = addProductLinks(message);
+  } else {
+    textSpan.textContent = message;
+  }
+  
   messageDiv.appendChild(textSpan);
   
   // Add special features for AI messages
@@ -152,6 +229,11 @@ function displayMessage(message, sender) {
   
   chatWindow.appendChild(messageDiv);
   
+  // Save messages to localStorage (if shouldSave is true)
+  if (shouldSave) {
+    saveMessages();
+  }
+  
   // Scroll to bottom
   chatWindow.scrollTop = chatWindow.scrollHeight;
 }
@@ -189,6 +271,46 @@ function addProductTags(message) {
     return tagDiv;
   }
   return null;
+}
+
+// ===== SMART PRODUCT LINKS FEATURE =====
+
+// Convert L'Oréal product mentions into clickable links
+function addProductLinks(text) {
+  // Common L'Oréal product names and lines
+  const products = {
+    // Makeup lines
+    'Infallible': 'makeup/infallible',
+    'Infallible Pro-Matte': 'makeup/infallible-pro-matte',
+    'True Match': 'makeup/true-match',
+    'Voluminous': 'makeup/voluminous-mascara',
+    'Colour Riche': 'makeup/colour-riche',
+    'Paradise': 'makeup/paradise',
+    
+    // Skincare lines
+    'RevitaLift': 'skincare/revitalift',
+    'Hyaluronic Acid': 'skincare/hyaluronic-acid',
+    'Age Perfect': 'skincare/age-perfect',
+    'Pure Clay': 'skincare/pure-clay',
+    
+    // Haircare lines
+    'Elvive': 'hair/elvive',
+    'Ever': 'hair/ever',
+    'Feria': 'hair/feria',
+    'Excellence': 'hair/excellence'
+  };
+  
+  let linkedText = text;
+  
+  // Replace product names with links
+  for (const [productName, url] of Object.entries(products)) {
+    const regex = new RegExp(`\\b(${productName})\\b`, 'gi');
+    linkedText = linkedText.replace(regex, (match) => {
+      return `<a href="https://www.loreal-paris.com/en-us/${url}" target="_blank" rel="noopener" class="product-link">${match}</a>`;
+    });
+  }
+  
+  return linkedText;
 }
 
 // Handle user feedback on AI responses
@@ -272,9 +394,13 @@ async function sendToOpenAI(userMessage) {
     // Add AI response to conversation history
     conversationHistory.push({ role: "assistant", content: aiResponse });
     
+    // Save conversation history to localStorage
+    saveConversationHistory();
+    
     // Keep conversation history manageable (last 10 exchanges)
     if (conversationHistory.length > 20) {
       conversationHistory = conversationHistory.slice(-20);
+      saveConversationHistory();
     }
     
     return aiResponse;
@@ -351,10 +477,188 @@ document.getElementById('clearChat').addEventListener('click', () => {
     chatWindow.innerHTML = '';
     // Reset conversation history
     conversationHistory = [];
+    // Clear localStorage
+    localStorage.removeItem('lorealChatHistory');
+    localStorage.removeItem('lorealChatMessages');
     // Show welcome message and quick replies again
     initializeChat();
   }
 });
 
 // Initialize chat when page loads
-document.addEventListener('DOMContentLoaded', initializeChat);
+document.addEventListener('DOMContentLoaded', () => {
+  initializeChat();
+  
+  // Load theme preference
+  loadThemePreference();
+});
+
+// ===== THEME TOGGLE FEATURE =====
+
+// Load theme preference from localStorage
+function loadThemePreference() {
+  const theme = localStorage.getItem('lorealTheme');
+  if (theme === 'dark') {
+    document.body.classList.add('dark-mode');
+    updateThemeIcon(true);
+  }
+}
+
+// Toggle between dark and light mode
+function toggleTheme() {
+  const isDark = document.body.classList.toggle('dark-mode');
+  localStorage.setItem('lorealTheme', isDark ? 'dark' : 'light');
+  updateThemeIcon(isDark);
+}
+
+// Update theme toggle button icon
+function updateThemeIcon(isDark) {
+  const themeBtn = document.getElementById('themeToggle');
+  const icon = themeBtn.querySelector('.material-icons');
+  icon.textContent = isDark ? 'light_mode' : 'dark_mode';
+  themeBtn.title = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+}
+
+// Theme toggle button event listener
+document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
+// ===== EXPORT CONVERSATION FEATURE =====
+
+// Export conversation as downloadable text file
+function exportConversation() {
+  const messages = [];
+  const allMessages = chatWindow.querySelectorAll('.msg');
+  
+  allMessages.forEach(msg => {
+    const text = msg.querySelector('.msg-text')?.textContent;
+    const sender = msg.classList.contains('user') ? 'You' : 'L\'Oréal Assistant';
+    if (text && !msg.querySelector('.quick-replies')) {
+      messages.push(`${sender}: ${text}`);
+    }
+  });
+  
+  if (messages.length === 0) {
+    alert('No conversation to export yet!');
+    return;
+  }
+  
+  // Create formatted text content
+  const timestamp = new Date().toLocaleString();
+  const content = `L'ORÉAL BEAUTY ASSISTANT - CONVERSATION EXPORT
+Generated: ${timestamp}
+Because You're Worth It! ✨
+
+${'='.repeat(60)}
+
+${messages.join('\n\n')}
+
+${'='.repeat(60)}
+
+Thank you for using L'Oréal Beauty Assistant!
+Visit us at: https://www.loreal-paris.com
+`;
+  
+  // Create download link
+  const blob = new Blob([content], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `loreal-conversation-${Date.now()}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  
+  // Show success message
+  const exportBtn = document.getElementById('exportBtn');
+  const icon = exportBtn.querySelector('.material-icons');
+  icon.textContent = 'check_circle';
+  exportBtn.style.color = 'var(--loreal-red)';
+  setTimeout(() => {
+    icon.textContent = 'download';
+    exportBtn.style.color = '';
+  }, 2000);
+}
+
+// Export button event listener
+document.getElementById('exportBtn').addEventListener('click', exportConversation);
+
+// ===== VOICE INPUT FEATURE =====
+
+// Check if browser supports speech recognition
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = null;
+let isListening = false;
+
+if (SpeechRecognition) {
+  recognition = new SpeechRecognition();
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.lang = 'en-US';
+  
+  recognition.onstart = () => {
+    isListening = true;
+    const voiceBtn = document.getElementById('voiceBtn');
+    voiceBtn.classList.add('listening');
+    voiceBtn.title = 'Listening... Click to stop';
+    const icon = voiceBtn.querySelector('.material-icons');
+    icon.textContent = 'mic_off';
+    icon.style.color = 'var(--loreal-red)';
+  };
+  
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    userInput.value = transcript;
+    userInput.focus();
+    // Optionally auto-submit
+    // chatForm.dispatchEvent(new Event('submit'));
+  };
+  
+  recognition.onerror = (event) => {
+    console.error('Speech recognition error:', event.error);
+    resetVoiceButton();
+    
+    if (event.error === 'not-allowed') {
+      alert('Microphone access denied. Please enable microphone permissions in your browser settings.');
+    } else if (event.error === 'no-speech') {
+      alert('No speech detected. Please try again.');
+    } else {
+      alert(`Voice input error: ${event.error}`);
+    }
+  };
+  
+  recognition.onend = () => {
+    resetVoiceButton();
+  };
+}
+
+function resetVoiceButton() {
+  isListening = false;
+  const voiceBtn = document.getElementById('voiceBtn');
+  voiceBtn.classList.remove('listening');
+  voiceBtn.title = 'Voice input';
+  const icon = voiceBtn.querySelector('.material-icons');
+  icon.textContent = 'mic';
+  icon.style.color = '';
+}
+
+function toggleVoiceInput() {
+  if (!recognition) {
+    alert('Voice input is not supported in your browser. Please use Chrome, Edge, or Safari.');
+    return;
+  }
+  
+  if (isListening) {
+    recognition.stop();
+  } else {
+    try {
+      recognition.start();
+    } catch (error) {
+      console.error('Error starting recognition:', error);
+      alert('Could not start voice input. Please try again.');
+    }
+  }
+}
+
+// Voice button event listener
+document.getElementById('voiceBtn').addEventListener('click', toggleVoiceInput);

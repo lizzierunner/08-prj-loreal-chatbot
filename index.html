@@ -46,6 +46,11 @@
           <span class="material-icons">refresh</span>
           New Chat
         </button>
+        
+        <!-- Theme Toggle Button -->
+        <button id="themeToggle" class="theme-toggle-btn" title="Toggle dark/light mode">
+          <span class="material-icons">dark_mode</span>
+        </button>
       </header>
 
       <!------- Chat Area ------->
@@ -57,6 +62,12 @@
 
           <form id="chatForm" class="chat-form">
             <label for="userInput" class="visually-hidden">Message</label>
+            <button type="button" id="exportBtn" class="action-btn" title="Export conversation">
+              <span class="material-icons">download</span>
+            </button>
+            <button type="button" id="voiceBtn" class="action-btn" title="Voice input">
+              <span class="material-icons">mic</span>
+            </button>
             <input
               id="userInput"
               name="userInput"
