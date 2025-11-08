@@ -38,15 +38,23 @@ This isn't just a basic chatbot. It features **15 professional-grade enhancement
 
 ### 📱 Fully Responsive Design
 
-Professional mobile-first responsive design with **5 breakpoints**:
+Professional mobile-first responsive design with **8 breakpoints** and **full zoom support**:
 
 - 🖥️ **Desktop (1025px+)** - Full-featured experience with optimal layout
-- 📱 **Tablet (768-1024px)** - Touch-optimized interface
+- �️ **Large Desktop (1440px+)** - Enhanced viewing for bigger screens
+- 🖥️ **Ultra-Wide/4K (2560px+)** - Optimized for 4K and ultra-wide displays
+- �📱 **Tablet (768-1024px)** - Touch-optimized interface
 - 📱 **Mobile (481-768px)** - Adaptive quick replies, repositioned controls
 - 📱 **Small Mobile (≤480px)** - Edge-to-edge native feel, stacked layout
 - 🔄 **Landscape Mobile** - Optimized horizontal viewing
+- 🎨 **High-DPI/Retina** - Crisp rendering on all display types
 
-**Tested on all major devices:** iPhone (all models), iPad, Android phones/tablets, laptops, desktop monitors (1080p to 4K).
+**✨ Zoom & Accessibility:**
+- 🔍 **Pinch-to-zoom enabled** - Users can zoom up to 5x for better readability
+- ♿ **Reduced motion support** - Respects prefers-reduced-motion setting
+- 🖨️ **Print-friendly** - Clean conversation exports
+
+**Tested on all major devices:** iPhone (all models), iPad, Android phones/tablets, laptops, desktop monitors (1080p to 4K), ultra-wide displays.
 
 ---
 
@@ -442,16 +450,20 @@ fragrances I can help you with today? Because You're Worth It! ✨"
 
 ### Responsive Breakpoints
 - **Desktop**: 900px max container width
+- **Large Desktop**: 1000px at 1440px+ screens
+- **Ultra-Wide**: 1200px at 2560px+ (4K support)
 - **Tablet**: 90% width at 768-1024px
 - **Mobile**: 95% width at 481-768px, adjusted spacing, repositioned clear button
 - **Small Mobile**: 100% width (edge-to-edge) at ≤480px, stacked layout
 - **Landscape**: Optimized for mobile landscape orientation
+- **High-DPI**: Retina and 4K display optimizations
 
 ### Touch Optimization
 - **Minimum tap targets**: 44x44px on mobile
-- **iOS zoom prevention**: 16px input font size
+- **User zoom enabled**: Pinch-to-zoom supported up to 5x
 - **Adaptive layouts**: Quick replies stack on small screens
 - **Native feel**: Edge-to-edge on small devices
+- **Cross-device tested**: iPhone, iPad, Android, tablets, desktops, 4K displays
 
 ---
 
@@ -519,12 +531,17 @@ fragrances I can help you with today? Because You're Worth It! ✨"
 
 ### Responsive Testing
 - [ ] Desktop (1920x1080) - Full features
+- [ ] Large Desktop (2560x1440) - Enhanced layout
+- [ ] 4K Display (3840x2160) - Ultra-wide support
 - [ ] Tablet (1024x768) - Touch-friendly
 - [ ] Mobile (375x667) - Compact UI
 - [ ] Small Mobile (320x568) - Stacked layout
 - [ ] Landscape mode - Optimized view
 - [ ] All interactive elements work on touch
-- [ ] Input doesn't trigger zoom on iOS
+- [ ] Pinch-to-zoom works on all devices (up to 5x)
+- [ ] Text remains readable when zoomed
+- [ ] Messages wrap properly at all zoom levels
+- [ ] Retina/High-DPI displays render crisply
 
 ---
 

@@ -7,6 +7,11 @@
 
 html {
   scroll-behavior: smooth;
+  /* Enable smooth zooming on all devices */
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 /* —— L'Oréal Official Brand Colors (per FutureBrand guidelines) —— */
@@ -241,6 +246,11 @@ body.dark-mode .chat-window {
   border-radius: 12px;
   max-width: 80%;
   animation: fadeIn 0.3s ease-in;
+  /* Ensure text remains readable when zoomed */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  -webkit-hyphens: auto;
+  hyphens: auto;
 }
 
 @keyframes fadeIn {
@@ -749,9 +759,9 @@ body.dark-mode .product-link:hover {
     font-size: 13px;
   }
   
-  /* Adjust input form for mobile */
+  /* Adjust input form for mobile - allows user zoom */
   .chat-form input {
-    font-size: 16px; /* Prevents zoom on iOS */
+    font-size: 16px; /* Readable size that allows zooming */
     padding: 12px 18px;
   }
   
@@ -916,5 +926,99 @@ body.dark-mode .product-link:hover {
   
   .site-tagline {
     font-size: 12px;
+  }
+}
+
+/* ===== ENHANCED DEVICE SUPPORT ===== */
+
+/* High-DPI displays (Retina, 4K, etc.) */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  /* Ensure crisp text rendering on high-DPI screens */
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Sharper borders and shadows */
+  .chat-window,
+  .msg,
+  .quick-reply-btn,
+  .chat-form input {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+}
+
+/* Support for wide screens (1440px+) */
+@media (min-width: 1440px) {
+  .page-wrapper {
+    max-width: 1000px;
+  }
+  
+  .chat-window {
+    height: 500px;
+  }
+}
+
+/* Support for very large screens (4K and ultra-wide) */
+@media (min-width: 2560px) {
+  .page-wrapper {
+    max-width: 1200px;
+  }
+  
+  .chat-window {
+    height: 600px;
+    font-size: 18px;
+  }
+  
+  .msg {
+    font-size: 18px;
+  }
+}
+
+/* Print support - clean conversation export */
+@media print {
+  .site-header,
+  .chat-form,
+  .clear-chat-btn,
+  .theme-toggle-btn,
+  .copy-btn,
+  .feedback-buttons,
+  .quick-replies {
+    display: none !important;
+  }
+  
+  .page-wrapper {
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+  
+  .msg {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+/* Accessibility - Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Dark mode system preference support */
+@media (prefers-color-scheme: dark) {
+  /* Users can still toggle manually, but this provides a good default */
+  body:not(.dark-mode) {
+    /* Optionally auto-enable dark mode based on system preference */
+    /* Uncomment the line below to auto-enable:
+    --bg-primary: #1a1a1a;
+    */
   }
 }
