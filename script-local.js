@@ -1,21 +1,46 @@
-/* DOM elements */
+/**
+ * L'Oréal Beauty Assistant Chatbot
+ * 
+ * A sophisticated AI-powered beauty consultant featuring:
+ * - OpenAI GPT-4o integration
+ * - Conversation persistence with localStorage
+ * - Dark/light mode theming
+ * - Voice input support
+ * - Smart product links
+ * - Export functionality
+ * - Real-time analytics tracking
+ * 
+ * @author Lizzie Johnson
+ * @version 2.0
+ * @license Educational Use
+ */
+
+/* ========================================
+   DOM ELEMENT REFERENCES
+   ======================================== */
 const chatForm = document.getElementById("chatForm");
 const userInput = document.getElementById("userInput");
 const chatWindow = document.getElementById("chatWindow");
 const sendBtn = document.getElementById("sendBtn");
 
+/* ========================================
+   GLOBAL STATE
+   ======================================== */
 // Chat history to maintain conversation context
 let conversationHistory = [];
 
-// Load conversation history from localStorage on startup
+/**
+ * Load conversation history from localStorage on startup
+ * Enables conversation persistence across browser sessions
+ */
 function loadConversationHistory() {
   const saved = localStorage.getItem('lorealChatHistory');
   if (saved) {
     try {
       conversationHistory = JSON.parse(saved);
-      console.log('Loaded conversation history from localStorage');
+      console.log('✅ Loaded conversation history from localStorage');
     } catch (e) {
-      console.error('Error loading conversation history:', e);
+      console.error('❌ Error loading conversation history:', e);
       conversationHistory = [];
     }
   }
@@ -418,6 +443,9 @@ chatForm.addEventListener("submit", async (e) => {
   const message = userInput.value.trim();
   if (!message) return;
   
+  // Track message sent
+  updateAnalytics('messageSent');
+  
   // Display user message
   displayMessage(message, 'user');
   
@@ -480,10 +508,29 @@ document.getElementById('clearChat').addEventListener('click', () => {
     // Clear localStorage
     localStorage.removeItem('lorealChatHistory');
     localStorage.removeItem('lorealChatMessages');
+    // Increment conversation counter
+    updateAnalytics('newConversation');
     // Show welcome message and quick replies again
     initializeChat();
   }
 });
+
+// Simple analytics tracking
+function updateAnalytics(action) {
+  const analytics = JSON.parse(localStorage.getItem('lorealAnalytics') || '{}');
+  
+  if (action === 'newConversation') {
+    analytics.totalConversations = (analytics.totalConversations || 0) + 1;
+  } else if (action === 'messageSent') {
+    analytics.totalMessages = (analytics.totalMessages || 0) + 1;
+    const today = new Date().toDateString();
+    analytics.lastActive = today;
+    analytics.messagesToday = analytics.lastActive === today ? (analytics.messagesToday || 0) + 1 : 1;
+  }
+  
+  localStorage.setItem('lorealAnalytics', JSON.stringify(analytics));
+  console.log('📊 Analytics:', analytics);
+}
 
 // Initialize chat when page loads
 document.addEventListener('DOMContentLoaded', () => {
