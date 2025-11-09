@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Key Test - L'Oréal Chatbot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .test-card {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #E4002B;
+      margin-top: 0;
+    }
+    .result {
+      padding: 15px;
+      border-radius: 8px;
+      margin: 15px 0;
+      font-family: monospace;
+    }
+    .success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    .info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+    button {
+      background: #E4002B;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    button:hover {
+      background: #C4001F;
+    }
+    code {
+      background: #f4f4f4;
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-card">
+    <h1>🔍 L'Oréal Chatbot - API Key Diagnostic</h1>
+    
+    <div id="results"></div>
+    
+    <button onclick="runTests()">Run Diagnostic Tests</button>
+    <button onclick="location.href='index.html'" style="background: #333; margin-left: 10px;">Go to Chatbot</button>
+  </div>
+
+  <script src="secrets.js" onerror="showError('secrets.js failed to load')"></script>
+  <script>
+    function showResult(message, type = 'info') {
+      const results = document.getElementById('results');
+      const div = document.createElement('div');
+      div.className = `result ${type}`;
+      div.innerHTML = message;
+      results.appendChild(div);
+    }
+
+    function showError(msg) {
+      showResult(`❌ ${msg}`, 'error');
+    }
+
+    function runTests() {
+      const results = document.getElementById('results');
+      results.innerHTML = '';
+      
+      // Test 1: Check protocol
+      const protocol = window.location.protocol;
+      if (protocol === 'file:') {
+        showResult(`❌ Test 1: FAILED - Using file:// protocol<br>
+                   <strong>Problem:</strong> You opened the HTML file directly<br>
+                   <strong>Solution:</strong> Use a local server instead<br>
+                   <strong>Command:</strong> <code>python3 -m http.server 8000</code><br>
+                   <strong>Then open:</strong> <code>http://localhost:8000/test-api-key.html</code>`, 'error');
+      } else {
+        showResult(`✅ Test 1: PASSED - Using ${protocol} protocol (correct!)`, 'success');
+      }
+      
+      // Test 2: Check if secrets.js loaded
+      if (typeof OPENAI_API_KEY === 'undefined') {
+        showResult(`❌ Test 2: FAILED - OPENAI_API_KEY is undefined<br>
+                   <strong>Problem:</strong> secrets.js did not load or define the key<br>
+                   <strong>Solution:</strong> Check that secrets.js exists and contains:<br>
+                   <code>const OPENAI_API_KEY = 'sk-proj-...';</code>`, 'error');
+      } else {
+        showResult(`✅ Test 2: PASSED - OPENAI_API_KEY is defined`, 'success');
+      }
+      
+      // Test 3: Check API key format
+      if (typeof OPENAI_API_KEY !== 'undefined' && OPENAI_API_KEY) {
+        if (OPENAI_API_KEY.startsWith('sk-')) {
+          showResult(`✅ Test 3: PASSED - API key has correct format (starts with 'sk-')`, 'success');
+        } else {
+          showResult(`⚠️ Test 3: WARNING - API key doesn't start with 'sk-'<br>
+                     <strong>Current value:</strong> ${OPENAI_API_KEY.substring(0, 10)}...<br>
+                     <strong>Expected:</strong> Should start with 'sk-proj-' or 'sk-'`, 'error');
+        }
+        
+        // Test 4: Check key length
+        if (OPENAI_API_KEY.length > 20) {
+          showResult(`✅ Test 4: PASSED - API key length looks valid (${OPENAI_API_KEY.length} characters)`, 'success');
+        } else {
+          showResult(`❌ Test 4: FAILED - API key seems too short (${OPENAI_API_KEY.length} characters)`, 'error');
+        }
+      }
+      
+      // Test 5: Browser check
+      const userAgent = navigator.userAgent;
+      let browser = 'Unknown';
+      if (userAgent.indexOf('Safari') > -1 && userAgent.indexOf('Chrome') === -1) {
+        browser = 'Safari';
+      } else if (userAgent.indexOf('Chrome') > -1) {
+        browser = 'Chrome';
+      } else if (userAgent.indexOf('Firefox') > -1) {
+        browser = 'Firefox';
+      }
+      showResult(`ℹ️ Test 5: Browser Detection - You are using ${browser}`, 'info');
+      
+      // Test 6: Current URL
+      showResult(`ℹ️ Test 6: Current URL - ${window.location.href}`, 'info');
+      
+      // Final recommendation
+      if (typeof OPENAI_API_KEY !== 'undefined' && OPENAI_API_KEY && protocol !== 'file:') {
+        showResult(`🎉 <strong>ALL TESTS PASSED!</strong><br>
+                   Your API key is loaded correctly. The chatbot should work!<br>
+                   Click "Go to Chatbot" to test it.`, 'success');
+      } else {
+        showResult(`🔧 <strong>ACTION NEEDED</strong><br>
+                   Some tests failed. Follow the solutions above to fix the issues.<br>
+                   <strong>Quick Fix:</strong><br>
+                   1. Close this file<br>
+                   2. Open Terminal<br>
+                   3. Run: <code>cd "/Users/lizziejohnson/Desktop/last-drop-charity-run/Nasa/Untitled/Nasa-app-project/Nasa Project/09-nasa-space-explorer-v2/08-prj-loreal-chatbot"</code><br>
+                   4. Run: <code>python3 -m http.server 8000</code><br>
+                   5. Open Safari to: <code>http://localhost:8000/test-api-key.html</code>`, 'error');
+      }
+    }
+
+    // Auto-run tests on load
+    window.addEventListener('DOMContentLoaded', runTests);
+  </script>
+</body>
+</html>

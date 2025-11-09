@@ -380,7 +380,12 @@ async function sendToOpenAI(userMessage) {
   try {
     // Check if API key is available
     if (typeof OPENAI_API_KEY === 'undefined' || !OPENAI_API_KEY) {
-      throw new Error('API key not found. Make sure secrets.js is loaded.');
+      console.error('❌ API key not found!');
+      console.error('🔧 Are you opening the file directly? (file:// protocol)');
+      console.error('💡 Solution: Run a local server instead');
+      console.error('💡 Command: python3 -m http.server 8000');
+      console.error('💡 Then open: http://localhost:8000');
+      throw new Error('API key not found. Please use a local server (see console for details).');
     }
 
     // Add user message to conversation history

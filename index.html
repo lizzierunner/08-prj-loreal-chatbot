@@ -113,7 +113,20 @@
     </div>
 
     <!-- LOCAL TESTING MODE: Using secrets.js with direct OpenAI calls -->
-    <script src="secrets.js"></script>
+    <script src="secrets.js" onerror="console.error('❌ Failed to load secrets.js - Make sure you are using a local server (http://localhost) not file:// protocol')"></script>
+    <script>
+      // Verify secrets.js loaded correctly
+      window.addEventListener('DOMContentLoaded', function() {
+        if (typeof OPENAI_API_KEY === 'undefined') {
+          console.error('❌ OPENAI_API_KEY not found!');
+          console.error('🔧 Solution: Use a local server instead of opening the file directly');
+          console.error('💡 Run: python3 -m http.server 8000');
+          console.error('💡 Then open: http://localhost:8000');
+        } else {
+          console.log('✅ API key loaded successfully');
+        }
+      });
+    </script>
     <script src="script-local.js"></script>
     
     <!-- PRODUCTION MODE: Using Cloudflare Worker (comment out above and use below) -->
