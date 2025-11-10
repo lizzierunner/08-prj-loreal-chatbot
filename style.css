@@ -418,23 +418,27 @@ body.dark-mode .chat-window {
   margin-bottom: 15px;
   flex-wrap: wrap;
   position: relative;
+  align-items: center;
   /* Removed absolute positioning that was causing overlap */
 }
 
 .product-tag {
   font-size: 11px;
-  padding: 5px 14px;
+  padding: 6px 14px;
   border-radius: 16px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
+  cursor: default;
+  white-space: nowrap;
+  display: inline-block;
 }
 
 .product-tag:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 }
 
 .tag-makeup {
@@ -714,6 +718,17 @@ body.dark-mode .product-link:hover {
   .chat-window {
     height: 380px;
   }
+  
+  /* Optimize purple buttons for tablets */
+  .product-tag {
+    font-size: 10.5px;
+    padding: 5px 12px;
+  }
+  
+  .share-btn {
+    padding: 9px 16px;
+    font-size: 12.5px;
+  }
 }
 
 /* Mobile devices (up to 768px) */
@@ -791,10 +806,28 @@ body.dark-mode .product-link:hover {
     margin-top: 4px;
   }
   
-  /* Product tags */
+  /* Product tags - Better mobile layout */
+  .product-tags {
+    gap: 6px;
+    margin-top: 12px;
+    margin-bottom: 8px;
+    justify-content: flex-start;
+  }
+  
   .product-tag {
     font-size: 10px;
-    padding: 2px 8px;
+    padding: 4px 10px;
+    border-radius: 12px;
+  }
+  
+  /* Share button mobile optimization */
+  .share-btn {
+    padding: 8px 14px;
+    font-size: 12px;
+    margin-top: 10px;
+    width: 100%;
+    max-width: 200px;
+    justify-content: center;
   }
   
   /* Footer */
@@ -906,14 +939,28 @@ body.dark-mode .product-link:hover {
     font-size: 14px;
   }
   
-  /* Product tags */
+  /* Product tags - Very small screens */
   .product-tags {
-    bottom: 30px;
+    gap: 5px;
+    margin-top: 10px;
   }
   
   .product-tag {
     font-size: 9px;
-    padding: 2px 6px;
+    padding: 3px 8px;
+    border-radius: 10px;
+  }
+  
+  /* Share button - Very small screens */
+  .share-btn {
+    padding: 7px 12px;
+    font-size: 11px;
+    width: 100%;
+    max-width: 180px;
+  }
+  
+  .share-btn .material-icons {
+    font-size: 14px;
   }
 }
 
@@ -973,6 +1020,18 @@ body.dark-mode .product-link:hover {
   .chat-window {
     height: 500px;
   }
+  
+  /* Larger purple buttons for big screens */
+  .product-tag {
+    font-size: 12px;
+    padding: 7px 16px;
+    border-radius: 18px;
+  }
+  
+  .share-btn {
+    padding: 12px 22px;
+    font-size: 14px;
+  }
 }
 
 /* Support for very large screens (4K and ultra-wide) */
@@ -988,6 +1047,18 @@ body.dark-mode .product-link:hover {
   
   .msg {
     font-size: 18px;
+  }
+  
+  /* Scale purple buttons for 4K */
+  .product-tag {
+    font-size: 13px;
+    padding: 8px 18px;
+    border-radius: 20px;
+  }
+  
+  .share-btn {
+    padding: 14px 26px;
+    font-size: 15px;
   }
 }
 
@@ -1032,6 +1103,45 @@ body.dark-mode .product-link:hover {
   /* Users can still toggle manually, but this provides a good default */
   body:not(.dark-mode) {
     /* Optionally auto-enable dark mode based on system preference */
+  }
+}
+
+/* ========================================
+   TOUCH-FRIENDLY & ACCESSIBILITY
+   ======================================== */
+
+/* Ensure minimum touch target size (48x48px recommended by WCAG) */
+@media (hover: none) and (pointer: coarse) {
+  /* Mobile/touch devices only */
+  
+  .quick-reply-btn,
+  .chat-form button,
+  .clear-chat-btn,
+  .theme-toggle-btn,
+  .copy-btn,
+  .feedback-btn,
+  .product-tag,
+  .share-btn {
+    min-height: 44px;  /* Apple's recommended minimum */
+    min-width: 44px;
+  }
+  
+  /* Better tap spacing for product tags on touch devices */
+  .product-tags {
+    gap: 10px;
+  }
+  
+  /* Prevent double-tap zoom on buttons */
+  button {
+    touch-action: manipulation;
+  }
+  
+  /* Improved touch feedback */
+  .quick-reply-btn:active,
+  .share-btn:active,
+  .product-tag:active {
+    transform: scale(0.95);
+    opacity: 0.9;
   }
 }
 
@@ -1245,15 +1355,23 @@ body.dark-mode .product-link:hover {
 .msg.ai .share-btn {
   margin-top: 16px;
   margin-bottom: 4px;
+  display: block;
 }
 
 .msg.ai .product-tags {
-  padding-top: 8px;
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  padding-top: 12px;
+  margin-top: 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .dark-mode .msg.ai .product-tags {
-  border-top-color: rgba(255, 255, 255, 0.05);
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Ensure product tags and share button stack nicely */
+.msg.ai > .share-btn + .product-tags {
+  margin-top: 8px;
+  padding-top: 8px;
 }
 
 /* Product Showcase Cards */
