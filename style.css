@@ -377,12 +377,15 @@ body.dark-mode .chat-window {
 
 /* Quick Reply Buttons */
 .quick-replies {
-  display: block;
+  display: block !important;
   width: 100%;
-  margin: 20px 0;
-  padding: 20px 0;
+  margin: 80px 0 40px 0 !important;
+  padding: 40px 0 !important;
   animation: fadeIn 0.5s ease-in;
-  clear: both;
+  clear: both !important;
+  position: static !important;
+  float: none !important;
+  z-index: auto !important;
 }
 
 .quick-reply-btn {

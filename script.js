@@ -171,6 +171,12 @@ function showQuickReplies() {
   quickReplyDiv.classList.add('quick-replies');
   quickReplyDiv.id = 'quick-replies';
   
+  // Add spacer to push buttons down visually
+  quickReplyDiv.style.marginTop = '40px';
+  quickReplyDiv.style.paddingTop = '40px';
+  quickReplyDiv.style.display = 'block';
+  quickReplyDiv.style.clear = 'both';
+  
   // Create a button for each quick reply
   quickReplies.forEach(reply => {
     const button = document.createElement('button');
@@ -187,6 +193,9 @@ function showQuickReplies() {
   });
   
   chatWindow.appendChild(quickReplyDiv);
+  
+  // Force scroll to show everything
+  chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
 // Display message in chat window
