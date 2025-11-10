@@ -1299,7 +1299,247 @@ body.dark-mode .product-link:hover {
   }
 }
 
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 0.2;
+  }
+}
+
+/* ========================================
+   ELITE FEATURES STYLING ✨
+   ======================================== */
+
+/* Feature 1: Expert Avatar Animation */
+.expert-avatar {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.avatar-pulse {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, var(--loreal-red) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.avatar-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  z-index: 1;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate(-50%, -50%) translateY(0);
+  }
+  50% {
+    transform: translate(-50%, -50%) translateY(-4px);
+  }
+}
+
+/* Adjust message layout for avatar */
+.msg.ai {
+  display: flex;
+  align-items: flex-start;
+}
+
+/* Feature 2: Recommendation Scores */
+.recommendation-score {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 14px;
+  padding: 2px 6px;
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(255, 165, 0, 0.3);
+  cursor: help;
+  transition: all 0.3s ease;
+}
+
+.recommendation-score:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(255, 165, 0, 0.5);
+}
+
+/* Feature 3: Consultation Summary */
+.consultation-summary {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 16px;
+  padding: 30px;
+  margin: 20px 0;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  animation: slideUp 0.5s ease;
+}
+
+body.dark-mode .consultation-summary {
+  background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+}
+
+.consultation-summary h3 {
+  color: var(--loreal-red);
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.summary-section {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+}
+
+body.dark-mode .summary-section {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.summary-section h4 {
+  color: var(--text-primary);
+  font-size: 16px;
+  margin-bottom: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.summary-section p {
+  color: var(--text-primary);
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.summary-section strong {
+  color: var(--loreal-red);
+}
+
+.concern-tags, .product-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.concern-tag, .product-tag {
+  background: var(--loreal-red);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: capitalize;
+  box-shadow: 0 2px 4px rgba(228, 0, 43, 0.3);
+}
+
+.product-tag {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+}
+
+.summary-footer {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid rgba(228, 0, 43, 0.2);
+}
+
+.summary-footer p {
+  color: var(--loreal-red);
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 15px;
+}
+
+.download-summary-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, var(--loreal-red), #ff1744);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(228, 0, 43, 0.3);
+}
+
+.download-summary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(228, 0, 43, 0.4);
+}
+
+.download-summary-btn .material-icons {
+  font-size: 20px;
+}
+
+/* Summary Button in Header */
+.summary-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+.summary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+.summary-btn .material-icons {
+  font-size: 18px;
+}
+
 /* Mobile responsiveness for new features */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Mobile responsiveness for elite features */
 @media (max-width: 768px) {
   .beauty-profile-content {
     padding: 30px 20px;
@@ -1317,5 +1557,33 @@ body.dark-mode .product-link:hover {
   .share-btn {
     font-size: 12px;
     padding: 6px 12px;
+  }
+  
+  .expert-avatar {
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+  }
+  
+  .avatar-icon {
+    font-size: 20px;
+  }
+  
+  .consultation-summary {
+    padding: 20px;
+  }
+  
+  .consultation-summary h3 {
+    font-size: 20px;
+  }
+  
+  .summary-btn {
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+  
+  .download-summary-btn {
+    padding: 10px 20px;
+    font-size: 14px;
   }
 }

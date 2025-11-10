@@ -191,6 +191,14 @@ function displayMessage(message, sender, shouldSave = true) {
   const messageDiv = document.createElement('div');
   messageDiv.classList.add('msg', sender);
   
+  // ⭐ FEATURE 1: Add animated expert avatar for AI messages
+  if (sender === 'ai') {
+    const avatar = document.createElement('div');
+    avatar.classList.add('expert-avatar');
+    avatar.innerHTML = '<div class="avatar-pulse"></div><span class="avatar-icon">✨</span>';
+    messageDiv.appendChild(avatar);
+  }
+  
   // Create text content with smart product links
   const textSpan = document.createElement('span');
   textSpan.classList.add('msg-text');
@@ -198,7 +206,11 @@ function displayMessage(message, sender, shouldSave = true) {
   // Add smart product links for AI messages
   if (sender === 'ai') {
     // Enhance with product cards FIRST
-    const enhancedMessage = enhanceProductMentions(message);
+    let enhancedMessage = enhanceProductMentions(message);
+    
+    // ⭐ FEATURE 2: Add product recommendation scores based on beauty profile
+    enhancedMessage = addRecommendationScores(enhancedMessage);
+    
     textSpan.innerHTML = addProductLinks(enhancedMessage);
   } else {
     textSpan.textContent = message;
@@ -259,6 +271,9 @@ function displayMessage(message, sender, shouldSave = true) {
   }
   
   chatWindow.appendChild(messageDiv);
+  
+  // ⭐ Track consultation data for summary
+  trackConsultationData(message, sender);
   
   // Save messages to localStorage (if shouldSave is true)
   if (shouldSave) {
@@ -483,11 +498,23 @@ document.getElementById('clearChat').addEventListener('click', () => {
     // Clear localStorage
     localStorage.removeItem('lorealChatHistory');
     localStorage.removeItem('lorealChatMessages');
+    // Reset consultation data
+    consultationData = {
+      productsRecommended: [],
+      concernsDiscussed: [],
+      messageCount: 0,
+      startTime: null
+    };
     // Increment conversation counter
     updateAnalytics('newConversation');
     // Show welcome message and quick replies again
     initializeChat();
   }
+});
+
+// ⭐ Get Summary Button functionality
+document.getElementById('getSummary').addEventListener('click', () => {
+  showConsultationSummary();
 });
 
 // Simple analytics tracking
@@ -885,6 +912,209 @@ function enhanceProductMentions(text) {
   }
   
   return enhanced;
+}
+
+// ⭐ FEATURE 2: Add Product Recommendation Scores
+function addRecommendationScores(text) {
+  // Only add scores if user has a beauty profile
+  if (!userBeautyProfile.skinType && !userBeautyProfile.hairType) {
+    return text;
+  }
+  
+  // Product keywords that would benefit from scores
+  const scorableProducts = [
+    'serum', 'moisturizer', 'cleanser', 'cream', 'toner', 'sunscreen',
+    'foundation', 'lipstick', 'mascara', 'eyeshadow',
+    'shampoo', 'conditioner', 'treatment', 'hair mask'
+  ];
+  
+  let enhanced = text;
+  
+  // Check if any scorable products are mentioned
+  for (const product of scorableProducts) {
+    const regex = new RegExp(`\\b${product}\\b`, 'gi');
+    if (regex.test(text)) {
+      // Generate a score based on context (simplified - in real app would use AI analysis)
+      const score = generateProductScore(product, text);
+      const stars = '⭐'.repeat(score);
+      const scoreTag = `<span class="recommendation-score" title="Recommended for your ${userBeautyProfile.skinType || userBeautyProfile.hairType} profile">${stars}</span>`;
+      
+      // Add score after first mention of product
+      enhanced = enhanced.replace(regex, (match) => {
+        return `${match} ${scoreTag}`;
+      });
+      
+      break; // Only add one score per message to avoid clutter
+    }
+  }
+  
+  return enhanced;
+}
+
+// Generate product score based on user profile and context
+function generateProductScore(product, context) {
+  const contextLower = context.toLowerCase();
+  
+  // Simple scoring logic - in production would use more sophisticated analysis
+  if (userBeautyProfile.skinType === 'oily' && 
+      (contextLower.includes('oil-free') || contextLower.includes('mattifying'))) {
+    return 5;
+  } else if (userBeautyProfile.skinType === 'dry' && 
+             (contextLower.includes('hydrating') || contextLower.includes('moisturizing'))) {
+    return 5;
+  } else if (contextLower.includes('highly recommend') || contextLower.includes('perfect for')) {
+    return 5;
+  } else if (contextLower.includes('great') || contextLower.includes('excellent')) {
+    return 4;
+  } else {
+    return 4; // Default good rating
+  }
+}
+
+// ⭐ FEATURE 3: Consultation Summary Generator
+let consultationData = {
+  productsRecommended: [],
+  concernsDiscussed: [],
+  messageCount: 0,
+  startTime: null
+};
+
+// Track consultation data
+function trackConsultationData(message, sender) {
+  // Initialize start time
+  if (!consultationData.startTime) {
+    consultationData.startTime = new Date();
+  }
+  
+  // Increment message count
+  consultationData.messageCount++;
+  
+  if (sender === 'ai') {
+    const messageLower = message.toLowerCase();
+    
+    // Track products mentioned
+    const products = ['serum', 'moisturizer', 'cleanser', 'foundation', 'lipstick', 
+                     'mascara', 'shampoo', 'conditioner', 'perfume', 'sunscreen'];
+    products.forEach(product => {
+      if (messageLower.includes(product) && !consultationData.productsRecommended.includes(product)) {
+        consultationData.productsRecommended.push(product);
+      }
+    });
+    
+    // Track concerns discussed
+    const concerns = ['acne', 'wrinkles', 'aging', 'dark spots', 'dryness', 'oily', 
+                     'sensitive', 'dull', 'uneven', 'redness', 'frizz', 'damage'];
+    concerns.forEach(concern => {
+      if (messageLower.includes(concern) && !consultationData.concernsDiscussed.includes(concern)) {
+        consultationData.concernsDiscussed.push(concern);
+      }
+    });
+  }
+}
+
+// Generate consultation summary
+function generateConsultationSummary() {
+  const duration = consultationData.startTime ? 
+    Math.round((new Date() - consultationData.startTime) / 60000) : 0; // minutes
+  
+  const summary = `
+    <div class="consultation-summary">
+      <h3>✨ Your L'Oréal Beauty Consultation Summary</h3>
+      
+      <div class="summary-section">
+        <h4>👤 Your Profile</h4>
+        <p><strong>Skin Type:</strong> ${userBeautyProfile.skinType || 'Not specified'}</p>
+        <p><strong>Hair Type:</strong> ${userBeautyProfile.hairType || 'Not specified'}</p>
+      </div>
+      
+      <div class="summary-section">
+        <h4>💬 Consultation Stats</h4>
+        <p><strong>Duration:</strong> ${duration} minute${duration !== 1 ? 's' : ''}</p>
+        <p><strong>Messages Exchanged:</strong> ${consultationData.messageCount}</p>
+      </div>
+      
+      ${consultationData.concernsDiscussed.length > 0 ? `
+        <div class="summary-section">
+          <h4>🎯 Concerns Addressed</h4>
+          <div class="concern-tags">
+            ${consultationData.concernsDiscussed.map(c => 
+              `<span class="concern-tag">${c}</span>`
+            ).join('')}
+          </div>
+        </div>
+      ` : ''}
+      
+      ${consultationData.productsRecommended.length > 0 ? `
+        <div class="summary-section">
+          <h4>🛍️ Products Recommended</h4>
+          <div class="product-tags">
+            ${consultationData.productsRecommended.map(p => 
+              `<span class="product-tag">${p.charAt(0).toUpperCase() + p.slice(1)}</span>`
+            ).join('')}
+          </div>
+        </div>
+      ` : ''}
+      
+      <div class="summary-footer">
+        <p><em>Because You're Worth It! ✨</em></p>
+        <button class="download-summary-btn" onclick="downloadSummary()">
+          <span class="material-icons">download</span> Download Summary
+        </button>
+      </div>
+    </div>
+  `;
+  
+  return summary;
+}
+
+// Show consultation summary
+function showConsultationSummary() {
+  // Only show if we have meaningful data
+  if (consultationData.messageCount < 4) {
+    return;
+  }
+  
+  const summaryHTML = generateConsultationSummary();
+  displayMessage(summaryHTML, 'ai', false);
+}
+
+// Download summary as text
+function downloadSummary() {
+  const summaryText = `
+L'ORÉAL BEAUTY CONSULTATION SUMMARY
+===================================
+
+YOUR PROFILE:
+Skin Type: ${userBeautyProfile.skinType || 'Not specified'}
+Hair Type: ${userBeautyProfile.hairType || 'Not specified'}
+
+CONSULTATION STATS:
+Messages Exchanged: ${consultationData.messageCount}
+${consultationData.concernsDiscussed.length > 0 ? `
+CONCERNS ADDRESSED:
+${consultationData.concernsDiscussed.map(c => `- ${c}`).join('\n')}
+` : ''}
+${consultationData.productsRecommended.length > 0 ? `
+PRODUCTS RECOMMENDED:
+${consultationData.productsRecommended.map(p => `- ${p.charAt(0).toUpperCase() + p.slice(1)}`).join('\n')}
+` : ''}
+
+Thank you for consulting with L'Oréal Beauty Assistant!
+Because You're Worth It! ✨
+
+Visit: ${window.location.href}
+  `.trim();
+  
+  // Create downloadable text file
+  const blob = new Blob([summaryText], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `loreal-consultation-${new Date().toISOString().split('T')[0]}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 // Initialize spectacular features on page load
