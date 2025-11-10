@@ -141,17 +141,11 @@ I can help you with:
 💄 Makeup recommendations
 🧴 Skincare routines  
 💇‍♀️ Haircare solutions
-🌸 Fragrance suggestions
-
-What can I help you with today? 💬`;
+🌸 Fragrance suggestions`;
 
     displayMessage(welcomeMessage, 'ai');
     
-    // Add instruction text BEFORE buttons
-    const instructionMessage = `Click a topic below to get started:`;
-    displayMessage(instructionMessage, 'ai');
-    
-    // Show quick reply buttons LAST
+    // Show quick reply buttons (includes prompt text inside)
     showQuickReplies();
   }
 }
@@ -171,11 +165,11 @@ function showQuickReplies() {
   quickReplyDiv.classList.add('quick-replies');
   quickReplyDiv.id = 'quick-replies';
   
-  // Add spacer to push buttons down visually
-  quickReplyDiv.style.marginTop = '40px';
-  quickReplyDiv.style.paddingTop = '40px';
-  quickReplyDiv.style.display = 'block';
-  quickReplyDiv.style.clear = 'both';
+  // Add heading INSIDE the button container
+  const heading = document.createElement('div');
+  heading.style.cssText = 'font-size: 16px; color: var(--text-primary); margin-bottom: 15px; font-weight: 500; padding: 20px 0;';
+  heading.textContent = '👇 What can I help you with today? Click a topic:';
+  quickReplyDiv.appendChild(heading);
   
   // Create a button for each quick reply
   quickReplies.forEach(reply => {
