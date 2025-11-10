@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick API Key Test</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+    .result { padding: 15px; margin: 10px 0; border-radius: 8px; font-family: monospace; }
+    .success { background: #d4edda; color: #155724; }
+    .error { background: #f8d7da; color: #721c24; }
+    h1 { color: #E4002B; }
+  </style>
+</head>
+<body>
+  <h1>🔍 API Key Quick Test</h1>
+  <div id="results"></div>
+  
+  <script src="config.js"></script>
+  <script src="secrets.js"></script>
+  <script>
+    const results = document.getElementById('results');
+    
+    function addResult(message, isSuccess) {
+      const div = document.createElement('div');
+      div.className = 'result ' + (isSuccess ? 'success' : 'error');
+      div.textContent = message;
+      results.appendChild(div);
+    }
+    
+    // Test 1: Check URL
+    addResult('Current URL: ' + window.location.href, true);
+    addResult('Protocol: ' + window.location.protocol, window.location.protocol === 'http:');
+    
+    // Test 2: Check window.OPENAI_API_KEY
+    if (typeof window.OPENAI_API_KEY !== 'undefined' && window.OPENAI_API_KEY) {
+      addResult('✅ window.OPENAI_API_KEY is defined', true);
+      addResult('✅ Starts with: ' + window.OPENAI_API_KEY.substring(0, 10) + '...', true);
+    } else {
+      addResult('❌ window.OPENAI_API_KEY is NOT defined', false);
+    }
+    
+    // Test 3: Check window.LorealConfig
+    if (window.LorealConfig && window.LorealConfig.OPENAI_API_KEY) {
+      addResult('✅ window.LorealConfig.OPENAI_API_KEY is defined', true);
+      addResult('✅ Starts with: ' + window.LorealConfig.OPENAI_API_KEY.substring(0, 10) + '...', true);
+    } else {
+      addResult('❌ window.LorealConfig is NOT defined', false);
+    }
+    
+    // Test 4: Check old OPENAI_API_KEY variable
+    if (typeof OPENAI_API_KEY !== 'undefined' && OPENAI_API_KEY) {
+      addResult('✅ OPENAI_API_KEY (standalone) is defined', true);
+    } else {
+      addResult('⚠️ OPENAI_API_KEY (standalone) is NOT defined', false);
+    }
+    
+    // Final verdict
+    const hasKey = (typeof window.OPENAI_API_KEY !== 'undefined' && window.OPENAI_API_KEY) || 
+                   (window.LorealConfig && window.LorealConfig.OPENAI_API_KEY);
+    
+    if (hasKey) {
+      addResult('🎉 SUCCESS! API key is loaded and chatbot should work!', true);
+      setTimeout(() => {
+        addResult('You can now go to: http://localhost:8001', true);
+      }, 500);
+    } else {
+      addResult('❌ FAILED! API key not loaded. Check console for errors.', false);
+    }
+    
+    // Log to console too
+    console.log('=== API KEY TEST RESULTS ===');
+    console.log('window.OPENAI_API_KEY:', typeof window.OPENAI_API_KEY);
+    console.log('window.LorealConfig:', window.LorealConfig);
+    console.log('OPENAI_API_KEY:', typeof OPENAI_API_KEY);
+  </script>
+</body>
+</html>

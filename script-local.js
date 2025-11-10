@@ -378,15 +378,23 @@ function hideLoading() {
 // Send message to OpenAI API directly (for local testing only)
 async function sendToOpenAI(userMessage) {
   try {
-    // Check if API key is available
-    if (typeof OPENAI_API_KEY === 'undefined' || !OPENAI_API_KEY) {
+    // Check if API key is available from multiple sources
+    let apiKey = window.OPENAI_API_KEY || (window.LorealConfig && window.LorealConfig.OPENAI_API_KEY);
+    
+    if (!apiKey || typeof apiKey === 'undefined') {
       console.error('❌ API key not found!');
-      console.error('🔧 Are you opening the file directly? (file:// protocol)');
-      console.error('💡 Solution: Run a local server instead');
-      console.error('💡 Command: python3 -m http.server 8000');
-      console.error('💡 Then open: http://localhost:8000');
+      console.error('🔧 Checked: window.OPENAI_API_KEY =', typeof window.OPENAI_API_KEY);
+      console.error('🔧 Checked: window.LorealConfig =', window.LorealConfig);
+      console.error('🔧 Current URL:', window.location.href);
+      console.error('� Protocol:', window.location.protocol);
+      console.error('💡 Solution: Make sure you are using http://localhost:8001 (not file://)');
+      console.error('💡 Command: python3 -m http.server 8001');
       throw new Error('API key not found. Please use a local server (see console for details).');
     }
+    
+    // Ensure OPENAI_API_KEY is set for the API call
+    const OPENAI_API_KEY = apiKey;
+    console.log('✅ Using API key for request');
 
     // Add user message to conversation history
     conversationHistory.push({ role: "user", content: userMessage });
