@@ -167,7 +167,7 @@ function showQuickReplies() {
   
   // Add heading INSIDE the button container
   const heading = document.createElement('div');
-  heading.style.cssText = 'font-size: 16px; color: var(--text-primary); margin-bottom: 15px; font-weight: 500; padding: 20px 0;';
+  heading.className = 'quick-reply-heading';
   heading.textContent = '👇 What can I help you with today? Click a topic:';
   quickReplyDiv.appendChild(heading);
   

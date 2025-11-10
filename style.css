@@ -426,6 +426,15 @@ body.dark-mode .chat-window {
   z-index: auto !important;
 }
 
+.quick-reply-heading {
+  font-size: 16px;
+  color: var(--text-primary);
+  margin-bottom: 15px;
+  font-weight: 500;
+  padding: 20px 0;
+  line-height: 1.5;
+}
+
 .quick-reply-btn {
   display: inline-block;
   margin: 5px;
@@ -816,6 +825,17 @@ body.dark-mode .product-link:hover {
   }
   
   /* Make quick reply buttons full width on mobile */
+  .quick-replies {
+    margin: 30px 0 20px 0 !important;
+    padding: 15px 0 !important;
+  }
+  
+  .quick-reply-heading {
+    font-size: 14px;
+    padding: 10px 0;
+    margin-bottom: 10px;
+  }
+  
   .quick-reply-btn {
     flex: 1 1 calc(50% - 5px);
     min-width: calc(50% - 5px);
@@ -927,6 +947,17 @@ body.dark-mode .product-link:hover {
   }
   
   /* Stack quick reply buttons vertically on very small screens */
+  .quick-replies {
+    margin: 20px 0 15px 0 !important;
+    padding: 10px 0 !important;
+  }
+  
+  .quick-reply-heading {
+    font-size: 13px;
+    padding: 8px 0;
+    margin-bottom: 8px;
+  }
+  
   .quick-reply-btn {
     flex: 1 1 100%;
     min-width: 100%;
