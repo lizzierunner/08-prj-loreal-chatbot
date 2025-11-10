@@ -141,18 +141,16 @@ I can help you with:
 💄 Makeup recommendations
 🧴 Skincare routines  
 💇‍♀️ Haircare solutions
-🌸 Fragrance suggestions`;
+🌸 Fragrance suggestions
+
+What can I help you with today? 💬
+
+Click a topic below to get started:`;
 
     displayMessage(welcomeMessage, 'ai');
     
-    // Show quick reply buttons to help users get started
+    // Show quick reply buttons AFTER the prompt text
     showQuickReplies();
-    
-    // Add a follow-up prompt AFTER the buttons
-    const followUpMessage = `What can I help you with today? Click a topic above or type your question below! 💬`;
-    setTimeout(() => {
-      displayMessage(followUpMessage, 'ai');
-    }, 500);
   }
 }
 
