@@ -112,8 +112,11 @@
       </footer>
     </div>
 
-    <!-- LOCAL TESTING MODE: Using config.js with direct OpenAI calls -->
-    <!-- Try config.js first (Safari-friendly), fallback to secrets.js -->
+    <!-- PRODUCTION MODE: Using Cloudflare Worker -->
+    <script src="script.js"></script>
+    
+    <!-- LOCAL TESTING MODE: Using config.js with direct OpenAI calls (comment out above and use below for localhost) -->
+    <!-- 
     <script src="config.js"></script>
     <script src="secrets.js"></script>
     <script>
@@ -141,9 +144,7 @@
       }
     </script>
     <script src="script-local.js"></script>
-    
-    <!-- PRODUCTION MODE: Using Cloudflare Worker (comment out above and use below) -->
-    <!-- <script src="script.js"></script> -->
+    -->
     
     <!-- Demo Mode Alternative: -->
     <!-- <script src="script-demo.js"></script> -->
