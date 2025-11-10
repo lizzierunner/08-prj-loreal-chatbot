@@ -1,8 +1,10 @@
 # Secrets file containing API keys - NEVER COMMIT THIS!
 secrets.js
+config.js
 
 # Additional security - ignore any files with API keys
 **/secrets.js
+**/config.js
 **/*secret*
 **/*apikey*
 .env
