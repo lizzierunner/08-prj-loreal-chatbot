@@ -197,7 +197,9 @@ function displayMessage(message, sender, shouldSave = true) {
   
   // Add smart product links for AI messages
   if (sender === 'ai') {
-    textSpan.innerHTML = addProductLinks(message);
+    // Enhance with product cards FIRST
+    const enhancedMessage = enhanceProductMentions(message);
+    textSpan.innerHTML = addProductLinks(enhancedMessage);
   } else {
     textSpan.textContent = message;
   }
@@ -250,6 +252,10 @@ function displayMessage(message, sender, shouldSave = true) {
     feedbackDiv.appendChild(thumbsUp);
     feedbackDiv.appendChild(thumbsDown);
     messageDiv.appendChild(feedbackDiv);
+    
+    // ⭐ ADD SHARE BUTTON for AI messages
+    const shareButton = createShareButton(message);
+    messageDiv.appendChild(shareButton);
   }
   
   chatWindow.appendChild(messageDiv);
@@ -678,3 +684,217 @@ function toggleVoiceInput() {
 
 // Voice button event listener
 document.getElementById('voiceBtn').addEventListener('click', toggleVoiceInput);
+
+/* ========================================
+   SPECTACULAR FEATURES 🌟
+   ======================================== */
+
+// ⭐ FEATURE 1: Beauty Profile System
+let userBeautyProfile = {
+  skinType: null,
+  hairType: null,
+  concerns: [],
+  preferences: []
+};
+
+// Load beauty profile from localStorage
+function loadBeautyProfile() {
+  const saved = localStorage.getItem('lorealBeautyProfile');
+  if (saved) {
+    try {
+      userBeautyProfile = JSON.parse(saved);
+      console.log('✅ Loaded beauty profile:', userBeautyProfile);
+    } catch (e) {
+      console.error('Error loading beauty profile:', e);
+    }
+  }
+}
+
+// Save beauty profile to localStorage
+function saveBeautyProfile() {
+  localStorage.setItem('lorealBeautyProfile', JSON.stringify(userBeautyProfile));
+  console.log('💾 Beauty profile saved');
+}
+
+// Show beauty profile setup modal
+function showBeautyProfileSetup() {
+  // Check if profile already exists
+  if (userBeautyProfile.skinType && userBeautyProfile.hairType) {
+    return; // Profile already set up
+  }
+  
+  const modal = document.createElement('div');
+  modal.className = 'beauty-profile-modal';
+  modal.innerHTML = `
+    <div class="beauty-profile-content">
+      <button class="close-modal" onclick="closeBeautyProfile()">&times;</button>
+      <h2>✨ Create Your Beauty Profile</h2>
+      <p>Help me personalize your experience!</p>
+      
+      <div class="profile-section">
+        <h3>💧 What's your skin type?</h3>
+        <div class="profile-options">
+          <button class="profile-btn" data-type="skin" data-value="oily">Oily</button>
+          <button class="profile-btn" data-type="skin" data-value="dry">Dry</button>
+          <button class="profile-btn" data-type="skin" data-value="combination">Combination</button>
+          <button class="profile-btn" data-type="skin" data-value="normal">Normal</button>
+          <button class="profile-btn" data-type="skin" data-value="sensitive">Sensitive</button>
+        </div>
+      </div>
+      
+      <div class="profile-section">
+        <h3>💇‍♀️ What's your hair type?</h3>
+        <div class="profile-options">
+          <button class="profile-btn" data-type="hair" data-value="straight">Straight</button>
+          <button class="profile-btn" data-type="hair" data-value="wavy">Wavy</button>
+          <button class="profile-btn" data-type="hair" data-value="curly">Curly</button>
+          <button class="profile-btn" data-type="hair" data-value="coily">Coily</button>
+        </div>
+      </div>
+      
+      <button class="save-profile-btn" onclick="saveProfileAndStart()">Start Chatting ✨</button>
+      <button class="skip-profile-btn" onclick="closeBeautyProfile()">Skip for now</button>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // Add click handlers for profile buttons
+  modal.querySelectorAll('.profile-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const type = this.dataset.type;
+      const value = this.dataset.value;
+      
+      // Remove active class from siblings
+      this.parentElement.querySelectorAll('.profile-btn').forEach(b => b.classList.remove('active'));
+      
+      // Add active class to clicked button
+      this.classList.add('active');
+      
+      // Save to profile
+      if (type === 'skin') {
+        userBeautyProfile.skinType = value;
+      } else if (type === 'hair') {
+        userBeautyProfile.hairType = value;
+      }
+    });
+  });
+}
+
+// Close beauty profile modal
+function closeBeautyProfile() {
+  const modal = document.querySelector('.beauty-profile-modal');
+  if (modal) {
+    modal.remove();
+  }
+}
+
+// Save profile and start chatting
+function saveProfileAndStart() {
+  if (!userBeautyProfile.skinType || !userBeautyProfile.hairType) {
+    alert('Please select both skin type and hair type to continue!');
+    return;
+  }
+  
+  saveBeautyProfile();
+  closeBeautyProfile();
+  
+  // Send welcome message with profile info
+  const profileMsg = `Great! I've saved your profile (${userBeautyProfile.skinType} skin, ${userBeautyProfile.hairType} hair). I'll use this to personalize my recommendations for you! How can I help you today?`;
+  displayMessage(profileMsg, 'ai');
+}
+
+// ⭐ FEATURE 2: Share to Social Media
+function createShareButton(messageText) {
+  const shareBtn = document.createElement('button');
+  shareBtn.className = 'share-btn';
+  shareBtn.innerHTML = '<span class="material-icons">share</span> Share';
+  shareBtn.title = 'Share this beauty tip';
+  
+  shareBtn.addEventListener('click', async () => {
+    const shareText = `L'Oréal Beauty Tip: ${messageText}\n\nGet personalized beauty advice at: ${window.location.href}\n\n#LOrealParis #BeautyTips #BecauseYoureWorthIt`;
+    
+    // Try native share API first (mobile)
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'L\'Oréal Beauty Tip',
+          text: shareText,
+          url: window.location.href
+        });
+        console.log('✅ Shared successfully');
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.log('Share cancelled or failed:', err);
+        }
+      }
+    } else {
+      // Fallback: Copy to clipboard
+      try {
+        await navigator.clipboard.writeText(shareText);
+        alert('✅ Beauty tip copied to clipboard! Share it on your favorite platform.');
+      } catch (err) {
+        // Final fallback: Show text in alert
+        alert('Share this beauty tip:\n\n' + shareText);
+      }
+    }
+  });
+  
+  return shareBtn;
+}
+
+// ⭐ FEATURE 3: Enhanced Product Card Display
+function enhanceProductMentions(text) {
+  // Detect product categories and create visual cards
+  const productKeywords = {
+    'serum': { emoji: '💧', category: 'Skincare', color: '#4A90E2' },
+    'moisturizer': { emoji: '💆‍♀️', category: 'Skincare', color: '#4A90E2' },
+    'lipstick': { emoji: '💄', category: 'Makeup', color: '#E4002B' },
+    'mascara': { emoji: '👁️', category: 'Makeup', color: '#000000' },
+    'foundation': { emoji: '✨', category: 'Makeup', color: '#E4002B' },
+    'shampoo': { emoji: '🧴', category: 'Haircare', color: '#8E44AD' },
+    'conditioner': { emoji: '💇‍♀️', category: 'Haircare', color: '#8E44AD' },
+    'perfume': { emoji: '🌸', category: 'Fragrance', color: '#FF69B4' },
+    'cleanser': { emoji: '🧼', category: 'Skincare', color: '#4A90E2' },
+    'sunscreen': { emoji: '☀️', category: 'Skincare', color: '#FFA500' }
+  };
+  
+  let enhanced = text;
+  let productsFound = [];
+  
+  // Find products mentioned
+  for (const [product, info] of Object.entries(productKeywords)) {
+    if (text.toLowerCase().includes(product)) {
+      productsFound.push({ product, ...info });
+    }
+  }
+  
+  // If products found, add visual cards
+  if (productsFound.length > 0) {
+    const cards = productsFound.map(p => `
+      <div class="product-card" style="border-left: 4px solid ${p.color}">
+        <span class="product-emoji">${p.emoji}</span>
+        <div class="product-info">
+          <span class="product-category">${p.category}</span>
+          <span class="product-name">${p.product.charAt(0).toUpperCase() + p.product.slice(1)}</span>
+        </div>
+      </div>
+    `).join('');
+    
+    enhanced += `<div class="product-showcase">${cards}</div>`;
+  }
+  
+  return enhanced;
+}
+
+// Initialize spectacular features on page load
+window.addEventListener('DOMContentLoaded', () => {
+  loadBeautyProfile();
+  
+  // Show beauty profile setup after a short delay if no profile exists
+  setTimeout(() => {
+    if (!userBeautyProfile.skinType || !userBeautyProfile.hairType) {
+      showBeautyProfileSetup();
+    }
+  }, 2000);
+});
