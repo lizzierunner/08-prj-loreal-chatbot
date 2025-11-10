@@ -257,7 +257,7 @@ async function sendToAPI(userMessage) {
     ];
 
     // ✅ Cloudflare Worker URL - Deployed and Ready!
-    const cloudflareWorkerUrl = 'https://loreal-chatbot2.esjohn15.workers.dev/';
+    const cloudflareWorkerUrl = 'https://loreal-chatbot-03.esjohn15.workers.dev/';
     
     // Send request to Cloudflare Worker (which will proxy to OpenAI)
     const response = await fetch(cloudflareWorkerUrl, {
