@@ -135,16 +135,16 @@ function initializeChat() {
     // Show welcome message for new users
     const welcomeMessage = `✨ Welcome to L'Oréal Beauty Assistant! ✨
 
-I'm here to help you discover the perfect beauty products and routines. Whether you're looking for:
+I'm here to help you discover the perfect beauty products and routines.
 
 💄 Makeup recommendations
 🧴 Skincare routines  
 💇‍♀️ Haircare solutions
 🌸 Fragrance suggestions
 
-Just ask me anything about beauty, and I'll provide personalized L'Oréal product recommendations!
+What can I help you with today?
 
-What can I help you with today?`;
+Try one of these popular topics:`;
 
     displayMessage(welcomeMessage, 'ai');
     
