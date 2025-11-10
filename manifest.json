@@ -10,7 +10,7 @@
   "icons": [
     {
       "src": "./img/loreal-logo.png",
-      "sizes": "any",
+      "sizes": "500x91",
       "type": "image/png",
       "purpose": "any"
     }
