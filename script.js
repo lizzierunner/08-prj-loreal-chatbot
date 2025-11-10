@@ -402,7 +402,6 @@ async function sendToOpenAI(userMessage) {
   } catch (error) {
     console.error('Error:', error);
     return "I apologize, but I'm having trouble connecting right now. Please try again. Because You're Worth It! ✨";
-  }. Please check your API key and try again. Because You're Worth It! ✨`;
   }
 }
 
