@@ -143,13 +143,15 @@ I can help you with:
 💇‍♀️ Haircare solutions
 🌸 Fragrance suggestions
 
-What can I help you with today? 💬
-
-Click a topic below to get started:`;
+What can I help you with today? 💬`;
 
     displayMessage(welcomeMessage, 'ai');
     
-    // Show quick reply buttons AFTER the prompt text
+    // Add instruction text BEFORE buttons
+    const instructionMessage = `Click a topic below to get started:`;
+    displayMessage(instructionMessage, 'ai');
+    
+    // Show quick reply buttons LAST
     showQuickReplies();
   }
 }
