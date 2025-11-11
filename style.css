@@ -892,9 +892,15 @@ body.dark-mode .product-link:hover {
   
   /* Adjust message bubbles for mobile */
   .msg {
-    max-width: 90%;
+    max-width: 92%;
     font-size: 15px;
-    padding: 10px 14px;
+    padding: 12px 16px;
+    line-height: 1.7;
+    word-spacing: 0.05em;
+  }
+  
+  .msg.ai {
+    max-width: 95%;
   }
   
   /* Make quick reply buttons full width on mobile */
@@ -1014,9 +1020,15 @@ body.dark-mode .product-link:hover {
   }
   
   .msg {
-    max-width: 95%;
+    max-width: 96%;
     font-size: 14px;
-    padding: 9px 12px;
+    padding: 10px 14px;
+    line-height: 1.8;
+    word-spacing: 0.05em;
+  }
+  
+  .msg.ai {
+    max-width: 98%;
   }
   
   /* Stack quick reply buttons vertically on very small screens */

@@ -135,13 +135,10 @@ function initializeChat() {
     // Show welcome message for new users
     const welcomeMessage = `✨ Welcome to L'Oréal Beauty Assistant! ✨
 
-I'm your personal beauty expert powered by AI.
+I'm your personal beauty expert powered by AI. I can help you with:
 
-I can help you with:
-💄 Makeup recommendations
-🧴 Skincare routines  
-💇‍♀️ Haircare solutions
-🌸 Fragrance suggestions`;
+💄 Makeup recommendations • 🧴 Skincare routines
+💇‍♀️ Haircare solutions • 🌸 Fragrance suggestions`;
 
     displayMessage(welcomeMessage, 'ai');
     
