@@ -214,7 +214,9 @@ function displayMessage(message, sender, shouldSave = true) {
     // ⭐ FEATURE 2: Add product recommendation scores based on beauty profile
     enhancedMessage = addRecommendationScores(enhancedMessage);
     
-    textSpan.innerHTML = addProductLinks(enhancedMessage);
+    // Set content (will be typed out below if it's plain text)
+    const finalContent = addProductLinks(enhancedMessage);
+    textSpan.innerHTML = finalContent;
   } else {
     textSpan.textContent = message;
   }
@@ -274,6 +276,19 @@ function displayMessage(message, sender, shouldSave = true) {
   }
   
   chatWindow.appendChild(messageDiv);
+  
+  // ⭐ PREMIUM FEATURE: Progressive typing effect for AI messages
+  if (sender === 'ai') {
+    // Check if message is plain text (no HTML tags from product links/scores)
+    const hasHTML = textSpan.innerHTML !== message;
+    
+    if (!hasHTML) {
+      // Clear and type out plain messages character-by-character
+      textSpan.textContent = '';
+      typeMessage(message, textSpan, 15); // 15ms per character for smooth feel
+    }
+    // If has HTML (product links, scores), show immediately to preserve formatting
+  }
   
   // ⭐ Track consultation data for summary
   trackConsultationData(message, sender);
@@ -370,6 +385,41 @@ function handleFeedback(type, messageDiv) {
   
   // Log feedback (in a real app, you'd send this to analytics)
   console.log(`User feedback: ${type}`);
+}
+
+// ===== PROGRESSIVE TYPING EFFECT (Premium Feature) =====
+
+// Type out AI messages character-by-character for refined, human-like feel
+async function typeMessage(text, element, speed = 20) {
+  // Store original HTML if it has formatting
+  const isHTML = /<[^>]*>/.test(text);
+  
+  if (isHTML) {
+    // For HTML content, show immediately (preserves formatting)
+    element.innerHTML = text;
+    return;
+  }
+  
+  // Clear element first and add typing cursor
+  element.textContent = '';
+  element.classList.add('typing');
+  
+  // Type each character with delay
+  for (let i = 0; i < text.length; i++) {
+    element.textContent += text[i];
+    
+    // Scroll to bottom as text appears
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+    
+    // Variable speed: slower after punctuation for natural feel
+    const char = text[i];
+    const nextSpeed = (char === '.' || char === '!' || char === '?') ? speed * 3 : speed;
+    
+    await new Promise(resolve => setTimeout(resolve, nextSpeed));
+  }
+  
+  // Remove typing cursor when done
+  element.classList.remove('typing');
 }
 
 // Show loading indicator with animated typing dots
