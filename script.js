@@ -223,6 +223,17 @@ function displayMessage(message, sender, shouldSave = true) {
   
   messageDiv.appendChild(textSpan);
   
+  // ⭐ PREMIUM: Add timestamp (shows on hover)
+  const timestamp = document.createElement('span');
+  timestamp.classList.add('msg-timestamp');
+  const now = new Date();
+  timestamp.textContent = now.toLocaleTimeString('en-US', { 
+    hour: 'numeric', 
+    minute: '2-digit',
+    hour12: true 
+  });
+  messageDiv.appendChild(timestamp);
+  
   // Add special features for AI messages
   if (sender === 'ai') {
     // Add copy button for AI responses
@@ -339,8 +350,18 @@ function addProductTags(message) {
 
 // ===== SMART PRODUCT LINKS FEATURE =====
 
+// ⭐ PREMIUM: Add shimmer gradient to L'Oréal brand mentions
+function addBrandGradient(text) {
+  // Match various forms of L'Oréal
+  const brandPattern = /(L['']Or[ée]al|LOreal|L'Oreal|LOREAL)/gi;
+  return text.replace(brandPattern, '<span class="brand-mention">$1</span>');
+}
+
 // Convert L'Oréal product mentions into clickable links
 function addProductLinks(text) {
+  // First add brand gradient
+  text = addBrandGradient(text);
+  
   // Common L'Oréal product names and lines
   const products = {
     // Makeup lines
@@ -425,15 +446,15 @@ async function typeMessage(text, element, speed = 20) {
 // Show loading indicator with animated typing dots
 function showLoading() {
   const loadingDiv = document.createElement('div');
-  loadingDiv.classList.add('msg', 'ai');
   loadingDiv.id = 'loading-message';
   
-  // Create animated typing indicator (three bouncing dots)
+  // ⭐ PREMIUM: Use skeleton shimmer instead of simple dots
   loadingDiv.innerHTML = `
-    <div class="typing-indicator">
-      <span></span>
-      <span></span>
-      <span></span>
+    <div class="skeleton-loading">
+      <div class="skeleton-line"></div>
+      <div class="skeleton-line"></div>
+      <div class="skeleton-line"></div>
+      <div class="skeleton-line"></div>
     </div>
   `;
   
@@ -446,6 +467,74 @@ function hideLoading() {
   const loadingMessage = document.getElementById('loading-message');
   if (loadingMessage) {
     loadingMessage.remove();
+  }
+}
+
+// ===== SPARKLE PARTICLE EFFECTS (Premium Feature) =====
+
+// ⭐ PREMIUM: Optional sound effects (very subtle)
+const soundEnabled = false; // Set to true to enable sounds
+
+// Create audio context for subtle sound effects
+function playSound(type) {
+  if (!soundEnabled) return;
+  
+  try {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    // Very subtle volumes
+    gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+    
+    if (type === 'send') {
+      // Gentle "whoosh" - rising tone
+      oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(800, audioContext.currentTime + 0.1);
+    } else if (type === 'receive') {
+      // Soft "ding" - falling tone
+      oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(600, audioContext.currentTime + 0.15);
+    }
+    
+    oscillator.type = 'sine';
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.2);
+  } catch (e) {
+    // Silent fail if audio not supported
+    console.log('Audio not supported');
+  }
+}
+
+// Create sparkle particles at button position
+function createSparkles(x, y) {
+  const sparkleChars = ['✨', '⭐', '💫', '🌟', '✦'];
+  const numSparkles = 6;
+  
+  for (let i = 0; i < numSparkles; i++) {
+    const sparkle = document.createElement('div');
+    sparkle.className = 'sparkle';
+    sparkle.textContent = sparkleChars[Math.floor(Math.random() * sparkleChars.length)];
+    
+    // Random direction
+    const angle = (Math.PI * 2 * i) / numSparkles;
+    const distance = 40 + Math.random() * 30;
+    const tx = Math.cos(angle) * distance;
+    const ty = Math.sin(angle) * distance;
+    
+    sparkle.style.setProperty('--tx', `${tx}px`);
+    sparkle.style.setProperty('--ty', `${ty}px`);
+    sparkle.style.left = `${x}px`;
+    sparkle.style.top = `${y}px`;
+    
+    document.body.appendChild(sparkle);
+    
+    // Remove after animation
+    setTimeout(() => sparkle.remove(), 1000);
   }
 }
 
@@ -486,6 +575,13 @@ chatForm.addEventListener("submit", async (e) => {
   const message = userInput.value.trim();
   if (!message) return;
   
+  // ⭐ PREMIUM: Create sparkle effects on send button
+  const btnRect = sendBtn.getBoundingClientRect();
+  createSparkles(btnRect.left + btnRect.width / 2, btnRect.top + btnRect.height / 2);
+  
+  // ⭐ PREMIUM: Play subtle send sound (if enabled)
+  playSound('send');
+  
   // Track message sent
   updateAnalytics('messageSent');
   
@@ -506,6 +602,9 @@ chatForm.addEventListener("submit", async (e) => {
     // Hide loading and display AI response
     hideLoading();
     displayMessage(aiResponse, 'ai');
+    
+    // ⭐ PREMIUM: Play subtle receive sound (if enabled)
+    playSound('receive');
     
   } catch (error) {
     hideLoading();
