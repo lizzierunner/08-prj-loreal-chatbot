@@ -23,20 +23,30 @@ html {
   --loreal-light-gray: #F5F5F5;
   --loreal-red-dark: #C4001F;  /* Darker red for hover states */
   
+  /* Refined luxury palette */
+  --loreal-gold: #B8860B;  /* Subtle gold accent for premium touches */
+  --loreal-soft-white: #FAFAFA;  /* Ultra-soft white for refined backgrounds */
+  --loreal-charcoal: #2C2C2C;  /* Sophisticated charcoal for depth */
+  --loreal-red-light: #FF1744;  /* Lighter red for gradients */
+  --loreal-shadow-soft: rgba(0, 0, 0, 0.08);  /* Refined shadow */
+  --loreal-shadow-medium: rgba(0, 0, 0, 0.15);  /* Medium shadow */
+  --loreal-shadow-strong: rgba(0, 0, 0, 0.25);  /* Strong shadow */
+  
   /* Light mode (default) */
   --bg-primary: #FFFFFF;
-  --bg-secondary: #F5F5F5;
+  --bg-secondary: #FAFAFA;
   --bg-header: #000000;
-  --text-primary: #333333;
+  --text-primary: #2C2C2C;
   --text-secondary: #FFFFFF;
-  --message-user-bg: #E4002B;
-  --message-ai-bg: #F5F5F5;
+  --message-user-bg: linear-gradient(135deg, #E4002B 0%, #FF1744 100%);
+  --message-ai-bg: #FAFAFA;
   --message-user-text: #FFFFFF;
-  --message-ai-text: #333333;
+  --message-ai-text: #2C2C2C;
   --border-color: #E4002B;
-  --shadow-color: rgba(0, 0, 0, 0.1);
+  --shadow-color: rgba(0, 0, 0, 0.08);
 }
 
+/* Dark mode colors */
 /* Dark mode colors */
 body.dark-mode {
   --bg-primary: #1a1a1a;
@@ -44,12 +54,15 @@ body.dark-mode {
   --bg-header: #0a0a0a;
   --text-primary: #e0e0e0;
   --text-secondary: #FFFFFF;
-  --message-user-bg: #E4002B;
+  --message-user-bg: linear-gradient(135deg, #E4002B 0%, #FF1744 100%);
   --message-ai-bg: #2a2a2a;
   --message-user-text: #FFFFFF;
   --message-ai-text: #e0e0e0;
   --border-color: #E4002B;
   --shadow-color: rgba(0, 0, 0, 0.5);
+  --loreal-shadow-soft: rgba(0, 0, 0, 0.3);
+  --loreal-shadow-medium: rgba(0, 0, 0, 0.4);
+  --loreal-shadow-strong: rgba(0, 0, 0, 0.6);
 }
 
 /* Smooth transitions for theme changes */
@@ -87,10 +100,11 @@ body {
 .site-header {
   text-align: center;
   padding: 30px 20px;
-  background: var(--bg-header);
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
   color: var(--text-secondary);
   border-bottom: 4px solid var(--border-color);
   position: relative;
+  box-shadow: 0 4px 20px rgba(228, 0, 43, 0.15);
 }
 
 .brand-container {
@@ -165,12 +179,17 @@ body {
 .brand-logo {
   height: 70px;
   width: auto;
-  /* Make logo visible on black background */
-  filter: brightness(0) invert(1);  /* Convert to white */
+  /* Make logo visible on black background with elegant glow */
+  filter: brightness(0) invert(1) drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));
   display: block;
   margin: 0 auto;
   /* Welcome animation - fade in from top */
   animation: fadeInDown 1s ease-out;
+  transition: filter 0.3s ease;
+}
+
+.brand-logo:hover {
+  filter: brightness(0) invert(1) drop-shadow(0 0 30px rgba(228, 0, 43, 0.5));
 }
 
 .site-title {
@@ -178,16 +197,20 @@ body {
   font-weight: 700;
   margin: 0;
   color: var(--loreal-white);
-  letter-spacing: 0.5px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
   /* Welcome animation - fade in from bottom with delay */
   animation: fadeInUp 1s ease-out 0.3s both;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .site-tagline {
   font-size: 16px;
   font-weight: 300;
-  opacity: 0.9;
+  opacity: 0.95;
   margin: 0;
+  letter-spacing: 0.5px;
+  font-style: italic;
   /* Welcome animation - fade in with delay */
   animation: fadeIn 1s ease-out 0.6s both;
 }
@@ -230,11 +253,14 @@ body {
   overflow-y: auto;
   background: var(--bg-primary);
   white-space: pre-line;
-  box-shadow: 0 4px 15px var(--shadow-color);
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05), 0 4px 15px var(--shadow-color);
   scroll-behavior: smooth; /* Smooth scrolling */
+  position: relative;
   
-  /* Modern glassmorphism effect */
-  background: rgba(255, 255, 255, 0.95);
+  /* Modern glassmorphism effect with subtle pattern */
+  background: 
+    linear-gradient(135deg, rgba(228, 0, 43, 0.02) 0%, transparent 100%),
+    rgba(255, 255, 255, 0.98);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
@@ -438,23 +464,43 @@ body.dark-mode .chat-window {
 .quick-reply-btn {
   display: inline-block;
   margin: 5px;
-  background: var(--loreal-white);
+  background: linear-gradient(135deg, var(--loreal-white) 0%, #fafafa 100%);
   border: 2px solid var(--loreal-red);
   color: var(--loreal-red);
   padding: 10px 18px;
   border-radius: 20px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
   font-family: inherit;
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 8px rgba(228, 0, 43, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.quick-reply-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.quick-reply-btn:hover::before {
+  left: 100%;
 }
 
 .quick-reply-btn:hover {
-  background: var(--loreal-red);
+  background: linear-gradient(135deg, var(--loreal-red) 0%, #c4001f 100%);
   color: var(--loreal-white);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(228, 0, 43, 0.3);
+  box-shadow: 0 6px 16px rgba(228, 0, 43, 0.4);
+  border-color: var(--loreal-red-dark);
 }
 
 /* Product Category Tags */
@@ -489,23 +535,27 @@ body.dark-mode .chat-window {
 }
 
 .tag-makeup {
-  background: #FFE5E5;
+  background: linear-gradient(135deg, #FFE5E5 0%, #FFD1D1 100%);
   color: #C41E3A;
+  border: 1px solid rgba(196, 30, 58, 0.2);
 }
 
 .tag-skincare {
-  background: #E5F5FF;
+  background: linear-gradient(135deg, #E5F5FF 0%, #CCE9FF 100%);
   color: #0066CC;
+  border: 1px solid rgba(0, 102, 204, 0.2);
 }
 
 .tag-haircare {
-  background: #F0E5FF;
+  background: linear-gradient(135deg, #F0E5FF 0%, #E0D1FF 100%);
   color: #6B3FA0;
+  border: 1px solid rgba(107, 63, 160, 0.2);
 }
 
 .tag-fragrance {
-  background: #FFE5F5;
+  background: linear-gradient(135deg, #FFE5F5 0%, #FFD1EB 100%);
   color: #C4428E;
+  border: 1px solid rgba(196, 66, 142, 0.2);
 }
 
 /* Smart Product Links */
@@ -608,24 +658,27 @@ body.dark-mode .product-link:hover {
   border-radius: 25px;
   font-size: 16px;
   font-family: inherit;
-  background: var(--loreal-white);
+  background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
   transition: all 0.3s ease;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .chat-form input:focus {
   outline: none;
   border-color: var(--loreal-red);  /* Red accent on focus */
-  box-shadow: 0 0 0 3px rgba(228, 0, 43, 0.1);
+  box-shadow: 0 0 0 4px rgba(228, 0, 43, 0.15), inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  background: #ffffff;
 }
 
 .chat-form input::placeholder {
   color: #999;
   font-style: italic;
+  letter-spacing: 0.3px;
 }
 
 .chat-form button {
   font-size: 18px;
-  background: var(--loreal-red);  /* Official vibrant red */
+  background: linear-gradient(135deg, var(--loreal-red) 0%, #c4001f 100%);
   color: var(--loreal-white);
   border: none;
   border-radius: 50%;
@@ -637,7 +690,27 @@ body.dark-mode .product-link:hover {
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(228, 0, 43, 0.3);
+  box-shadow: 0 4px 15px rgba(228, 0, 43, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.chat-form button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.3s, height 0.3s;
+}
+
+.chat-form button:hover::before {
+  width: 100%;
+  height: 100%;
 }
 
 /* Action Buttons (Export & Voice) */
@@ -682,18 +755,18 @@ body.dark-mode .product-link:hover {
 }
 
 .chat-form button:hover {
-  background: var(--loreal-red-dark);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(228, 0, 43, 0.4);
+  background: linear-gradient(135deg, #c4001f 0%, #a00019 100%);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 24px rgba(228, 0, 43, 0.5);
 }
 
 .chat-form button:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(228, 0, 43, 0.3);
+  box-shadow: 0 0 0 4px rgba(228, 0, 43, 0.3);
 }
 
 .chat-form button:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.95);
 }
 
 /* visually hidden */
