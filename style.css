@@ -1115,6 +1115,46 @@ body.dark-mode .product-link:hover {
   }
 }
 
+/* ===========================
+   iOS Safari Typography Fix
+   ========================== */
+/* Fix iOS Safari narrow columns and hyphenation on mobile screens */
+@media (max-width: 640px) {
+  /* Disable auto-hyphenation on all message text */
+  .msg,
+  .msg p,
+  .msg.ai,
+  .msg.user,
+  .summary-content,
+  .summary-content p,
+  #chat-window > div {
+    -webkit-hyphens: none !important;
+    hyphens: none !important;
+    word-break: keep-all !important;
+    overflow-wrap: break-word !important;
+  }
+  
+  /* Ensure containers don't create narrow columns */
+  .chat-window,
+  #chat-window,
+  .chatbox {
+    width: 100% !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+  
+  /* Ensure message bubbles use full available width */
+  .msg {
+    width: auto !important;
+    max-width: 96% !important;
+    display: block !important;
+  }
+  
+  .msg.ai {
+    max-width: 98% !important;
+  }
+}
+
 /* Landscape mobile orientation */
 @media (max-width: 768px) and (orientation: landscape) {
   .chat-window {
